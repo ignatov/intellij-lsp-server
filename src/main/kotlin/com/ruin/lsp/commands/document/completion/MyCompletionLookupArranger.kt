@@ -2,13 +2,11 @@ package com.ruin.lsp.commands.document.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.completion.impl.CompletionSorterImpl
-import com.intellij.codeInsight.daemon.impl.DaemonProgressIndicator
 import com.intellij.codeInsight.lookup.*
 import com.intellij.codeInsight.lookup.impl.LookupImpl
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Pair
@@ -18,14 +16,7 @@ import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.containers.MultiMap
 import java.util.ArrayList
 import java.util.LinkedHashSet
-import kotlin.Any
-import kotlin.Array
-import kotlin.Boolean
-import kotlin.Comparable
 import kotlin.Comparator
-import kotlin.Exception
-import kotlin.Int
-import kotlin.String
 
 /**
  * Mostly a copy of CompletionLookupArranger with the important parts for sorting completion items gutted out.
@@ -252,7 +243,7 @@ class MyCompletionLookupArranger(val params: CompletionParameters, val location:
     }
 }
 
-internal data class PresentationInvariant(val itemText: String?, val tail: String?, val type: String?): Comparable<PresentationInvariant> {
+internal data class PresentationInvariant(val itemText: String?, val tail: String?, val type: String?) : Comparable<PresentationInvariant> {
     override fun compareTo(other: PresentationInvariant): Int {
         var result = StringUtil.naturalCompare(itemText, other.itemText)
         if (result != 0) return result
@@ -268,7 +259,7 @@ internal data class PresentationInvariant(val itemText: String?, val tail: Strin
 
 }
 
-private class EmptyClassifier constructor() : Classifier<LookupElement>(null, "empty") {
+private class EmptyClassifier : Classifier<LookupElement>(null, "empty") {
 
     override fun getSortingWeights(items: Iterable<LookupElement>, context: ProcessingContext): List<Pair<LookupElement, Any>> {
         return emptyList()

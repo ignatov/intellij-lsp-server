@@ -17,7 +17,6 @@ import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.impl.event.DocumentEventImpl
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.progress.util.AbstractProgressIndicatorExBase
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
@@ -41,7 +40,6 @@ import java.util.function.Supplier
 
 private val LOG = Logger.getInstance("#com.ruin.lsp.commands.completion.CompletionParametersUtil")
 private var completionParametersCtor: Constructor<CompletionParameters>? = null
-private var offsetTranslatorCtor: Constructor<OffsetTranslator>? = null
 
 fun newCompletionParametersInstance(position: PsiElement?, originalFile: PsiFile,
                                     completionType: CompletionType, offset: Int, invocationCount: Int, editor: Editor,
@@ -96,7 +94,7 @@ fun makeCompletionParameters(editor: Editor, project: Project): CompletionParame
         val psiFile = PsiUtilBase.getPsiFileInEditor(editor.caretModel.currentCaret, project)
             ?: error("no PSI file: " + FileDocumentManager.getInstance().getFile(editor.document)!!)
         psiFile.putUserData(PsiFileEx.BATCH_REFERENCE_PROCESSING, java.lang.Boolean.TRUE)
-        assertCommitSuccessful(editor, psiFile!!)
+        assertCommitSuccessful(editor, psiFile)
         ref.set(psiFile)
     }
     val psiFile = ref.get() ?: return null
@@ -117,7 +115,7 @@ fun makeCompletionParameters(editor: Editor, project: Project): CompletionParame
 private fun makeInitContext(editor: Editor, psiFile: PsiFile, caret: Caret): CompletionInitializationContext {
     val current = Ref.create<CompletionContributor>(null)
     val context = object : CompletionInitializationContext(editor, caret, psiFile, CompletionType.BASIC, 0) {
-        internal var dummyIdentifierChanger: CompletionContributor? = null
+        var dummyIdentifierChanger: CompletionContributor? = null
 
         override fun setDummyIdentifier(dummyIdentifier: String) {
             super.setDummyIdentifier(dummyIdentifier)
@@ -174,7 +172,7 @@ private fun insertDummyIdentifier(initContext: CompletionInitializationContext,
     val endOffset = hostMap.getOffset(CompletionInitializationContext.SELECTION_END_OFFSET)
 
     indicator.registerChildDisposable(
-        Supplier { OffsetTranslator(hostEditor.document, initContext.file, copyDocument, startOffset, endOffset, dummyIdentifier)!! })
+        Supplier { OffsetTranslator(hostEditor.document, initContext.file, copyDocument, startOffset, endOffset, dummyIdentifier) })
 
     val copyOffsets = topLevelOffsets.replaceInCopy(hostCopy, startOffset, endOffset, dummyIdentifier)
     return if (hostCopy.isValid) copyOffsets else null
@@ -245,7 +243,7 @@ internal class OffsetTranslator(originalDocument: Document, private val myOrigin
         }, this)
 
         myOriginalFile.project.messageBus.connect(this).subscribe(PsiModificationTracker.TOPIC, object : PsiModificationTracker.Listener {
-            internal var lastModCount = myOriginalFile.viewProvider.modificationStamp
+            var lastModCount = myOriginalFile.viewProvider.modificationStamp
             override fun modificationCountChanged() {
                 if (isUpToDate && lastModCount != myOriginalFile.viewProvider.modificationStamp) {
                     myTranslation.addAll(sinceCommit)

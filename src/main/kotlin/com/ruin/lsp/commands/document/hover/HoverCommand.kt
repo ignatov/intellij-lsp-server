@@ -41,9 +41,9 @@ class HoverCommand(val position: Position) : DocumentCommand<Hover>, Disposable 
         val markedString = ref.get()
 
         return if (markedString.value.isEmpty())
-            Hover(mutableListOf())
+            Hover(listOf())
         else
-            Hover(mutableListOf(Either.forRight<String, MarkedString>(markedString)))
+            Hover(listOf(Either.forRight<String, MarkedString>(markedString)))
     }
 
     private fun provider(language: Language): DocumentationProvider? {

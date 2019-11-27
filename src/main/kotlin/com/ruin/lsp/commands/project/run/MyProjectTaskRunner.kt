@@ -1,6 +1,5 @@
 package com.ruin.lsp.commands.project.run
 
-import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.impl.ExecutionManagerImpl
 import com.intellij.openapi.compiler.CompileScope
 import com.intellij.openapi.compiler.CompileStatusNotification

@@ -101,7 +101,7 @@ abstract class CompletionDecorator<out T : Any>(val lookup: LookupElement, val e
             val descriptor = (lookup.`object` as? DeclarationLookupObjectImpl)?.descriptor ?: return null
             val psi = lookup.psiElement
             return when (descriptor) {
-                is org.jetbrains.kotlin.descriptors.ValueParameterDescriptor -> {
+                is ValueParameterDescriptor -> {
                     KtValueParameterCompletionDecorator(lookup, psi as KtParameter)
                 }
                 is org.jetbrains.kotlin.descriptors.VariableDescriptor -> {

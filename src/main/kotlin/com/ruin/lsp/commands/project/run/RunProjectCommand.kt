@@ -2,17 +2,18 @@ package com.ruin.lsp.commands.project.run
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.application.ApplicationConfiguration
-import com.intellij.execution.configurations.*
+import com.intellij.execution.configurations.JavaCommandLine
+import com.intellij.execution.configurations.RunConfiguration
+import com.intellij.execution.configurations.RunConfigurationBase
+import com.intellij.execution.configurations.RunProfileWithCompileBeforeLaunchOption
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.impl.DefaultJavaProgramRunner
 import com.intellij.execution.impl.RunManagerImpl
 import com.intellij.execution.junit.JUnitConfiguration
-import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ExecutionEnvironmentBuilder
 import com.intellij.openapi.application.TransactionGuard
 import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.impl.VirtualFileManagerImpl
@@ -26,7 +27,6 @@ import com.ruin.lsp.model.EnvironmentVariable
 import com.ruin.lsp.model.RunProjectCommandLine
 import org.jetbrains.kotlin.idea.run.KotlinRunConfiguration
 import org.slf4j.LoggerFactory
-import java.nio.file.Path
 
 private val LOG = LoggerFactory.getLogger(RunProjectCommand::class.java)
 

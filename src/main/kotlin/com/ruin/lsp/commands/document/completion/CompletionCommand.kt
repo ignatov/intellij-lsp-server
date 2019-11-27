@@ -2,7 +2,6 @@ package com.ruin.lsp.commands.document.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.completion.impl.CamelHumpMatcher
-import com.intellij.codeInsight.daemon.impl.DaemonProgressIndicator
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.impl.LookupImpl
 import com.intellij.openapi.application.ApplicationManager
@@ -23,8 +22,8 @@ import org.eclipse.lsp4j.jsonrpc.messages.Either
 import java.util.*
 
 class CompletionCommand(val position: Position,
-                        val snippetSupport: Boolean) : DocumentCommand<Either<MutableList<CompletionItem>, CompletionList>> {
-    override fun execute(ctx: ExecutionContext): Either<MutableList<CompletionItem>, CompletionList> {
+                        val snippetSupport: Boolean) : DocumentCommand<Either<List<CompletionItem>, CompletionList>> {
+    override fun execute(ctx: ExecutionContext): Either<List<CompletionItem>, CompletionList> {
         val prefix: String? = null
         var sortedLookupElements: List<LookupElement> = listOf()
 
@@ -73,7 +72,7 @@ class CompletionCommand(val position: Position,
 
         completionCache.cacheCompletion(ctx.file, sortedLookupElements)
 
-        return Either.forRight(CompletionList(false, result.toMutableList()))
+        return Either.forRight(CompletionList(false, result.toList()))
     }
 }
 

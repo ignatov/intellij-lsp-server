@@ -1,12 +1,11 @@
 package com.ruin.lsp.commands.document.find
 
-import com.intellij.codeInsight.TargetElementUtil
 import com.intellij.codeInsight.navigation.actions.GotoDeclarationAction
-import com.intellij.codeInsight.navigation.actions.GotoTypeDeclarationAction
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.project.IndexNotReadyException
-import com.intellij.openapi.util.Ref
-import com.intellij.psi.*
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiMethod
 import com.intellij.psi.search.ProjectScope.getProjectScope
 import com.intellij.psi.search.searches.DefinitionsScopedSearch
 import com.intellij.psi.search.searches.SuperMethodsSearch
@@ -34,7 +33,6 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils
 import org.jetbrains.kotlin.resolve.lazy.BodyResolveMode
 import org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException
-import java.util.*
 
 class FindDefinitionCommand(val position: Position) : DocumentCommand<MutableList<Location>> {
     override fun execute(ctx: ExecutionContext): MutableList<Location> {
@@ -48,9 +46,9 @@ class FindDefinitionCommand(val position: Position) : DocumentCommand<MutableLis
             return list
         }
 
-        return when {
-            ctx.file.fileType is KotlinFileType -> findDefinitionForKotlin(ctx, offset)
-            ctx.file.fileType is JavaFileType -> forDefinitionForJava(ctx, offset)
+        return when (ctx.file.fileType) {
+            is KotlinFileType -> findDefinitionForKotlin(ctx, offset)
+            is JavaFileType -> forDefinitionForJava(ctx, offset)
             else -> mutableListOf()
         }
     }

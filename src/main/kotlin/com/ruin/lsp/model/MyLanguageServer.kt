@@ -158,7 +158,7 @@ private fun <T : Any?> executeAndGetResult(
     }
 }
 
-fun <T: Any?> invokeCommandAndWait(command: com.ruin.lsp.commands.DocumentCommand<T>,
+fun <T: Any?> invokeCommandAndWait(command: DocumentCommand<T>,
                                   project: Project,
                                   file: PsiFile,
                                   client: LanguageClient? = null): T {
@@ -172,7 +172,7 @@ fun <T: Any?> invokeCommandAndWait(command: com.ruin.lsp.commands.DocumentComman
     return result
 }
 
-fun <T: Any?> invokeCommandAndWait(command: com.ruin.lsp.commands.ProjectCommand<T>,
+fun <T: Any?> invokeCommandAndWait(command: ProjectCommand<T>,
                                   project: Project): T {
     val result = invokeAndWaitIfNeeded(Computable {
         command.execute(project)
