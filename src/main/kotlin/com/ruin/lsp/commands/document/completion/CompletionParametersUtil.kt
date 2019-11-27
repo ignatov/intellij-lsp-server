@@ -114,7 +114,7 @@ fun makeCompletionParameters(editor: Editor, project: Project): CompletionParame
 
 private fun makeInitContext(editor: Editor, psiFile: PsiFile, caret: Caret): CompletionInitializationContext {
     val current = Ref.create<CompletionContributor>(null)
-    val context = object : CompletionInitializationContext(editor, caret, psiFile, CompletionType.BASIC, 0) {
+    val context = object : CompletionInitializationContext(editor, caret, psiFile.language, psiFile, CompletionType.BASIC, 0) {
         var dummyIdentifierChanger: CompletionContributor? = null
 
         override fun setDummyIdentifier(dummyIdentifier: String) {
@@ -234,9 +234,9 @@ internal class OffsetTranslator(originalDocument: Document, private val myOrigin
 
         val sinceCommit = LinkedList<DocumentEvent>()
         originalDocument.addDocumentListener(object : DocumentListener {
-            override fun documentChanged(e: DocumentEvent?) {
+            override fun documentChanged(e: DocumentEvent) {
                 if (isUpToDate) {
-                    val inverse = DocumentEventImpl(originalDocument, e!!.offset, e.newFragment, e.oldFragment, 0, false)
+                    val inverse = DocumentEventImpl(originalDocument, e.offset, e.newFragment, e.oldFragment, 0, false)
                     sinceCommit.addLast(inverse)
                 }
             }

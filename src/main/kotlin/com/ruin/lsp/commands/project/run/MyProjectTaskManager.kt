@@ -50,15 +50,18 @@ class MyProjectTaskManager(val project: Project, val callback: CompileStatusNoti
         val chunkStatusNotification = if (callback == null)
             null
         else
-            ProjectTaskNotification { executionResult ->
-                val inProgress = inProgressCounter.decrementAndGet()
-                val allErrors = errorsCounter.addAndGet(executionResult.errors)
-                val allWarnings = warningsCounter.addAndGet(executionResult.warnings)
-                if (executionResult.isAborted) {
-                    abortedFlag.set(true)
-                }
-                if (inProgress == 0) {
-                    callback.finished(ProjectTaskResult(abortedFlag.get(), allErrors, allWarnings))
+            object : ProjectTaskNotification {
+                override fun finished(executionResult: ProjectTaskResult) {
+                    val inProgress = inProgressCounter.decrementAndGet()
+                    val allErrors = errorsCounter.addAndGet(executionResult.errors)
+                    val allWarnings = warningsCounter.addAndGet(executionResult.warnings)
+                    if (executionResult.isAborted) {
+                        abortedFlag.set(true)
+                    }
+                    if (inProgress == 0) {
+                        callback.finished(ProjectTaskResult(abortedFlag.get(), allErrors, allWarnings))
+                    }
+
                 }
             }
 

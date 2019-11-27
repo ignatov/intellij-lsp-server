@@ -46,7 +46,7 @@ class BuildProjectCommand(private val id: String,
         val setting = runManager.getConfigurationById(id) ?: return BuildProjectResult(false)
         val config = setting.configuration
 
-        if (config is RunConfigurationBase && config.excludeCompileBeforeLaunchOption()) {
+        if (config is RunConfigurationBase<*> && config.excludeCompileBeforeLaunchOption()) {
             return BuildProjectResult(false)
         }
 
@@ -70,8 +70,10 @@ class BuildProjectCommand(private val id: String,
                 val sessionId = ExecutionManagerImpl.EXECUTION_SESSION_ID_KEY.get(env)
                 val projectTaskManager = MyProjectTaskManager(ctx, compileStatusNotification(client))
                 if (!ctx.isDisposed) {
-                    projectTaskManager.run(ProjectTaskContext(sessionId, config), projectTask, ProjectTaskNotification {
-                        client.notifyBuildFinished(it.buildResult())
+                    projectTaskManager.run(ProjectTaskContext(sessionId, config), projectTask, object : ProjectTaskNotification {
+                        override fun finished(executionResult: ProjectTaskResult) {
+                            client.notifyBuildFinished(executionResult.buildResult())
+                        }
                     })
                 } else {
                     //done.up()

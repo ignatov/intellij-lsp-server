@@ -1,8 +1,5 @@
 package com.ruin.lsp.util
 
-import com.intellij.codeInsight.completion.CodeCompletionHandlerBase
-import com.intellij.codeInsight.completion.CompletionProgressIndicator
-import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -35,11 +32,9 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiUtilCore
-import com.intellij.util.io.URLUtil
 import com.ruin.lsp.model.MyLanguageClient
 import com.ruin.lsp.model.MyLanguageServer
 import com.ruin.lsp.values.DocumentUri
-import org.apache.commons.lang.SystemUtils
 import org.eclipse.lsp4j.MessageParams
 import org.eclipse.lsp4j.MessageType
 import org.eclipse.lsp4j.Position
@@ -47,8 +42,6 @@ import org.eclipse.lsp4j.services.LanguageClient
 import org.jdom.JDOMException
 import java.io.File
 import java.io.IOException
-import java.net.URI
-import java.net.URL
 import java.net.URLDecoder
 import java.nio.file.Paths
 import java.util.*
@@ -432,7 +425,7 @@ private fun hideProjectFrame(project: Project?) {
     }
 
     val impl = mgr.allocateFrame(project!!)
-    impl.isVisible = false
+    impl.component.isVisible = false
 }
 
 fun toggleProjectFrame(project: Project) {

@@ -12,7 +12,7 @@ import org.eclipse.lsp4j.jsonrpc.CancelChecker
 /**
  * Created by dhleong on 11/5/14.
  */
-internal class CompletionResultSetImpl(consumer: Consumer<CompletionResult>, private val myLengthOfTextBeforePosition: Int,
+internal class CompletionResultSetImpl(consumer: Consumer<in CompletionResult>, private val myLengthOfTextBeforePosition: Int,
                                        prefixMatcher: PrefixMatcher,
                                        private val contributor: CompletionContributor,
                                        private val parameters: CompletionParameters,
@@ -59,7 +59,7 @@ internal class CompletionResultSetImpl(consumer: Consumer<CompletionResult>, pri
     }
 
     override fun addLookupAdvertisement(text: String) {
-        completionService.advertisementText = text
+        completionService.setAdvertisementText(text)
     }
 
     override fun caseInsensitive(): CompletionResultSet {
